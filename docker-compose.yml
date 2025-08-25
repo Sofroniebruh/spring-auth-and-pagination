@@ -1,0 +1,35 @@
+services:
+  backend-service:
+    build: ./spring-backend
+    ports:
+      - "8085:8080"
+    env_file:
+      - ./spring-backend/.env
+    networks:
+      - private
+    restart: on-failure
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:15-alpine
+    restart: always
+    ports:
+      - "5432"
+    networks:
+      - private
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+networks:
+  private:
+    driver: bridge
+
+volumes:
+  pgdata:
+
